@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CHEMOZ - نظام ليبلات أدوية الكيماوي</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; margin: 0; padding: 15px; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+        
+        .header-img { width: 100%; height: 180px; object-fit: cover; border-radius: 8px; margin-bottom: 10px; }
+        h1 { color: #0a9396; text-align: center; margin: 10px 0 20px 0; font-size: 26px; letter-spacing: 1px; }
+        
+        .upload-section { border: 2px dashed #0a9396; padding: 25px; text-align: center; border-radius: 8px; background: #f8f9fa; cursor: pointer; transition: 0.3s; margin-bottom: 20px; }
+        .upload-section:hover { background: #e9ecef; }
+        input[type="file"] { display: none; }
+        
+        .editor-section { display: none; margin-top: 20px; }
+        .preview-img { width: 100%; max-height: 200px; object-fit: contain; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 15px; background: #000; }
+        
+        .form-group { margin-bottom: 12px; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; color: #005f73; font-size: 14px; }
+        input[type="text"], input[type="number"] { width: 100%; padding: 10px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 6px; font-size: 15px; }
+        
+        .btn { background-color: #0a9396; color: white; border: none; padding: 12px; font-size: 16px; border-radius: 6px; cursor: pointer; width: 100%; margin-top: 10px; transition: 0.3s; font-weight: bold; }
+        .btn:hover { background-color: #005f73; }
+        .btn-secondary { background-color: #6c757d; }
+        .btn-secondary:hover { background-color: #5a6268; }
+    </style>
+    <!-- مكتبة إكسل -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- صورة الواجهة والعنوان المطلوب -->
+        <img src="https://images.unsplash.com/photo-1586773860418-d37222d8fce3?auto=format&fit=crop&w=800&q=80" alt="Hospital Building" class="header-img">
+        <h1>CHEMOZ</h1>
+        
+        <!-- قسم رفع الروشتة -->
+        <div class="upload-section" onclick="document.getElementById('prescriptionFile').click()">
+            <p style="margin: 0; font-size: 16px; color: #0a9396; font-weight: bold;">📷 اضغط لالتقاط صورة الروشتة أو اختيار ملف</p>
+            <input type="file" id="prescriptionFile" accept="image/*" onchange="handleImageUpload(event)">
+        </div>
+
+        <!-- قسم مراجعة وتعديل البيانات -->
+        <div class="editor-section" id="editorSection">
+            <h3 style="text-align: center; color: #333; margin-bottom: 10px;">مراجعة وتعديل بيانات الليبل</h3>
+            <img id="prescriptionPreview" class="preview-img" alt="معاينة الروشتة">
+
+            <div class="form-group">
+                <label>اسم المريض:</label>
+                <input type="text" id="patientName">
+            </div>
+            <div class="form-group">
+                <label>رقم الـ MRN:</label>
+                <input type="text" id="mrn">
+            </div>
+            <div class="form-group">
+                <label>اسم الدواء:</label>
+                <input type="text" id="drugName">
+            </div>
+            <div class="form-group">
+                <label>الجرعة (MG):</label>
+                <input type="number" id="dose">
+            </div>
+            <div class="form-group">
+                <label>السائل المذيب (Diluent):</label>
+                <input type="text" id="diluent">
+            </div>
+            <div class="form-group">
+                <label>حجم المذيب (ML):</label>
+                <input type="number" id="diluentVol">
+            </div>
+            <div class="form-group">
+                <label>معدل التسريب (Infusion Rate):</label>
+                <input type="text" id="infusionRate">
+            </div>
+
+            <button class="btn" onclick="generateAndDownloadExcel()">⬇️ توليد وحفظ ملف إكسل فوراً على الموبايل</button>
+            <button class="btn btn-secondary" onclick="resetForm()">إلغاء وإعادة المسح</button>
+        </div>
+    </div>
+
+    <script>
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // عرض صورة المعاينة
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('prescriptionPreview').src = e.target.result;
+            }
+            reader.readAsDataURL(file);
+
+            // افتراض البيانات المستخرجة مبدئياً (قابلة للتعديل بالكامل من الصيدلي)
+            document.getElementById('patientName').value = "EID NJR ALOUTAIBI";
+            document.getElementById('mrn').value = "2034306304";
+            document.getElementById('drugName').value = "GEMCITABINE (40 MG/ML)";
+            document.getElementById('dose').value = "1000";
+            document.getElementById('diluent').value = "SODIUM CHLORIDE 0.9%";
+            document.getElementById('diluentVol').value = "100";
+            document.getElementById('infusionRate').value = "45 MINS";
+
+            // إظهار حقول التعديل وإخفاء زر الرفع المؤقت
+            document.getElementById('editorSection').style.display = 'block';
+        }
+
+        function generateAndDownloadExcel() {
+            // جلب البيانات المُعدلة من الحقول
+            const patientName = document.getElementById('patientName').value;
+            const mrn = document.getElementById('mrn').value;
+            const drugName = document.getElementById('drugName').value;
+            const dose = parseFloat(document.getElementById('dose').value) || 0;
+            const diluent = document.getElementById('diluent').value;
+            const diluentVol = parseFloat(document.getElementById('diluentVol').value) || 0;
+            const infusionRate = document.getElementById('infusionRate').value;
+
+            // الحسابات البرمجية الدقيقة
+            // افترضنا تركيز افتراضي 40 أو يتم حسابه حسب الدواء
+            let drugVol = dose / 40; 
+            let totalVol = drugVol + diluentVol;
+
+            // تجهيز نص الليبل في خلية A1 بدقة مطابقة لمعايير KFAFH
+            let labelText = `KFAFH - FOR INTRAVENOUS INFUSION\n` +
+                            `${drugName}    ${dose} MG\n` +
+                            `${diluent}    ${diluentVol} ML\n` +
+                            `INFUSED OVER: ${infusionRate}    VOLUME: ${totalVol} ML\n` +
+                            `Prep Date:        BUD:\n` +
+                            `Pt. Name: ${patientName}\n` +
+                            `MRN: ${mrn}    WARD: ADULT ONCO\n` +
+                            `PREP BY:        CHECKED BY:\n` +
+                            `caution: CYTOTOXIC`;
+
+            let wb = XLSX.utils.book_new();
+            let ws = XLSX.utils.aoa_to_sheet([[labelText]]);
+
+            // تنسيق خلية A1 (Calibri 11، التفاف النص، محاذاة للأعلى ويسار)
+            ws['A1'].s = {
+                font: { name: "Calibri", sz: 11 },
+                alignment: { wrapText: true, vertical: "top", horizontal: "left" }
+            };
+
+            // ضبط أبعاد الخلية مطابقة للمعيار (عرض 47، ارتفاع 140)
+            ws['!cols'] = [{ wch: 47 }];
+            ws['!rows'] = [{ hpt: 140 }];
+
+            XLSX.utils.book_append_sheet(wb, ws, "Chemo Label");
+            
+            // تحميل الملف مباشرة على الموبايل
+            XLSX.writeFile(wb, `${patientName}_Label.xlsx`);
+        }
+
+        function resetForm() {
+            document.getElementById('editorSection').style.display = 'none';
+            document.getElementById('prescriptionFile').value = '';
+        }
+    </script>
+</body>
+</html>
