@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ليبلات الكيماوي KFAFH</title>
+<script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
+<style>
+:root{--bg:#eef2f3;--fg:#14232b;--mut:#5b6b73;--card:#fff;--bd:#cfd8dc;--ac:#0f6b73;--acf:#fff;--warn:#fff1c2;--wb:#d49a00;--bad:#b42318;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10181c;--fg:#e6eef1;--mut:#97a8b0;--card:#18232a;--bd:#2c3b44;--ac:#46b5bd;--acf:#06222a;--warn:#4a3c0c;--wb:#d6a40f;--bad:#ff8f84}}
+:root[data-theme="dark"]{--bg:#10181c;--fg:#e6eef1;--mut:#97a8b0;--card:#18232a;--bd:#2c3b44;--ac:#46b5bd;--acf:#06222a;--warn:#4a3c0c;--wb:#d6a40f;--bad:#ff8f84}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.55 system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif}
+.w{max-width:1000px;margin:0 auto;padding:16px 14px 40px}
+h1{font-size:21px;margin:6px 0 2px}.sub{color:var(--mut);margin:0 0 14px;font-size:13px}
+section{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:14px;margin-bottom:14px}
+h2{font-size:16px;margin:0 0 10px}
+.btns{display:flex;gap:10px;flex-wrap:wrap}
+button,.fb{font:inherit;border:1px solid var(--ac);background:transparent;color:var(--ac);border-radius:8px;padding:11px 16px;cursor:pointer;min-height:44px}
+button.p{background:var(--ac);color:var(--acf);font-weight:600}
+button:disabled{opacity:.45;cursor:not-allowed}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--ac);outline-offset:1px}
+#pv{max-width:100%;max-height:220px;border-radius:8px;margin-top:10px;display:none;border:1px solid var(--bd)}
+#st{margin-top:10px;min-height:22px;font-size:14px}.err{color:var(--bad)}
+.pf{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-bottom:12px}
+label span{display:block;font-size:13px;color:var(--mut)}
+input,select{font:inherit;width:100%;box-sizing:border-box;padding:8px;border:1px solid var(--bd);border-radius:6px;background:var(--bg);color:var(--fg);min-height:40px}
+input.warn,select.warn{background:var(--warn);border-color:var(--wb)}
+.sc{overflow-x:auto}
+table{border-collapse:collapse;min-width:940px;width:100%}
+th,td{padding:5px;text-align:start;vertical-align:top;font-size:13px}
+th{color:var(--mut);font-weight:600;white-space:nowrap}
+td.c{white-space:nowrap;padding-top:14px;direction:ltr;text-align:start}
+.note{font-size:12px;color:var(--bad);margin-top:2px}
+pre{margin:0;padding:10px;background:var(--bg);border:1px solid var(--bd);border-radius:8px;font:12.5px/1.45 Calibri,system-ui,sans-serif;white-space:pre-wrap;direction:ltr;text-align:left}
+.pvs{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:10px;margin-top:12px}
+.pr{font-size:13px;color:var(--bad);margin:8px 0 0;padding-inline-start:18px}
+.ck{display:flex;gap:10px;align-items:flex-start;margin:14px 0 10px}.ck input{width:22px;min-height:22px;margin-top:3px}
+</style></head><body><div class="w">
+<h1>ليبلات الكيماوي</h1><p class="sub">KFAFH — ارفع صورة الروشتة، راجع الجدول وعدّله، ثم كوّن ملف الإكسل.</p>
+
+<section><h2>١. صورة الروشتة</h2>
+<div class="btns">
+<label class="fb p" style="background:var(--ac);color:var(--acf)">📷 تصوير الروشتة<input id="cam" type="file" accept="image/*" capture="environment" hidden></label>
+<label class="fb">🖼️ اختيار من الملفات<input id="fil" type="file" accept="image/*" hidden></label>
+</div>
+<img id="pv" alt="الروشتة"><div id="st" role="status"></div>
+<details style="margin-top:10px"><summary>إعداد القراءة التلقائية (مفتاح API)</summary><p class="sub">للقراءة التلقائية أدخل مفتاح Anthropic API الخاص بك. يتحفظ على جهازك فقط، وصورة الروشتة بتتبعت لـ Anthropic للقراءة. بدون مفتاح تقدر تدخل البيانات يدويًا.</p><input id="ak" type="password" dir="ltr" placeholder="sk-ant-..." autocomplete="off"><div class="btns" style="margin-top:8px"><button id="aks">حفظ المفتاح على هذا الجهاز</button><button id="akd">حذف المفتاح</button></div></details></section>
+
+<section><h2>٢. بيانات المريض والأدوية</h2>
+<div class="pf"><label><span>اسم المريض (الأول والثاني والأخير)</span><input id="pn" dir="ltr"></label>
+<label><span>الرقم الطبي MRN (أرقام فقط)</span><input id="pm" inputmode="numeric" dir="ltr"></label></div>
+<div class="sc"><table><thead><tr><th>#</th><th style="min-width:200px">الدواء</th><th style="width:90px">الجرعة MG</th><th style="width:100px">النوع</th><th style="min-width:170px">المذيب</th><th style="width:90px">حجم المذيب ML</th><th style="width:100px">المدة</th><th>التركيز</th><th>حجم الدواء</th><th>الحجم الكلي</th><th></th></tr></thead><tbody id="tb"></tbody></table></div>
+<div class="btns" style="margin-top:10px"><button id="add">+ إضافة دواء</button></div>
+<div class="pvs" id="pvs"></div></section>
+
+<section><h2>٣. ملف الإكسل</h2>
+<div class="ck"><input type="checkbox" id="cf"><label for="cf">راجعت الاسم والرقم الطبي والجرعات والمذيبات، وأنا المسؤول عن المراجعة النهائية.</label></div>
+<div class="btns"><button class="p" id="gen" disabled>تكوين ملف الإكسل وحفظه</button><button id="rst">روشتة جديدة</button></div>
+<ul class="pr" id="pr"></ul><div id="gs" style="margin-top:8px;font-size:14px"></div></section>
+</div>
+<script>
+const T="10,ACTINOMYCIN,0.45;13,BENDAMUSTINE,5;14,Asparaginase ERWINA,400;15,BEVACIZUMAB,25;16,BLEOMYCIN,3;17,BRENTUXIMAB,5;18,Bortezomib,1;19,Calcium folinate,10;20,CARBOplatin INJECTION,10;21,CEtuximab,5;22,CISplatin,0.5;23,CYCLOPHOSPHAMIDE,20;24,CYTARABINE,50;25,Dacarbazine,10;26,DAUNOrubicin,5;27,DOCEtaxel,20;28,DOXOrubicin,2;29,EPIrubicin,2;30,Etoposide,20;31,FLUDArabine Phosphate,25;32,5-FLUROURACIL,50;33,Gemcitabine HCL,40;34,IDARUBICIN HCL,1;35,IFOSfamide,40;36,Irinotecan,20;37,L-Asparaginase,10000;38,Mesna,100;39,Methotrexat,25;40,MitoMYCIN,0.5;41,MitoXANTRONE,2;42,OXALIplatin,5;43,Panitmumab,20;44,PEMBROLIZUMAB,25;45,PACLItaxel,6;46,Peg-Aspargase (ONCASPAR),750;47,RItuximab INJ S.C,119.6;48,RItuximab,10;49,TRASTUzumab,22;50,VinBLAStine,1;51,VinCRIStine,1;52,VinORELbine,10;53,PEMETREXED,25;54,PERTUZUMAB,30;55,NIVOLUMAB,10;56,BORTEZOMIB (Sc),2.5;57,DACTINOMYCIN,454.5;58,ECULIZUMAB,10;59,ERWINA ASPARAGINASE,5000;60,INFLIXIMAB,10;61,LEUCOVORINE,10;62,NIVOLUMAB,10;64,Ado-TRASTUZUMIB,20;68,AZACITIDINE,10;69,DURVALUMAB,50";
+const D=T.split(";").map(s=>{const[a,b,c]=s.split(",");return{id:+a,name:b,conc:+c}});
+const $=s=>document.querySelector(s);
+const R1=x=>{const v=Math.floor(x*10+.5+1e-9)/10;return Number.isInteger(v)?String(v):v.toFixed(1)};
+const SCRE=/\bs\.?c\b|\(sc\)/i, TYPES=["IV","SC","IVB","PUMP"];
+const PROMPT=`You read a photo of a chemotherapy prescription (KFAFH hospital, Saudi Arabia). The photo may be rotated or sideways: mentally rotate it first.
+Reply with ONLY this JSON:
+{"patient":{"name":string|null,"mrn":string|null},"unclear_patient":["name"|"mrn"],"drugs":[{"name":string,"dose":string,"type":"IV"|"SC"|"IVB"|"PUMP","diluent":string|null,"diluent_ml":string|null,"duration":string|null,"unclear":["id"|"dose"|"dil"|"dml"|"dur"]}]}
+Rules:
+- patient.name: first, second and last name only (three words), Latin uppercase.
+- mrn: digits only, from the field "MR No." / MRN. Never use the National Id. null if not visible.
+- Only drugs in the chemotherapy medications section. Skip premedications (ondansetron, dexamethasone, acetaminophen, chlorphenamine, metoclopramide) and any oral PO drug.
+- dose: the handwritten dose in the Final Order, in mg, exactly as written, digits only. Never calculate it from mg/m2 or mg/kg. If handwriting is unclear, crossed out or marked, give your best reading and add "dose" to unclear.
+- From text like "IV in 250 ml D5W": diluent "D5W" (or "NS"), diluent_ml "250". null when no diluent is written (SQ, bolus).
+- duration: normalize to forms like "45 MINS", "2 HRS", "1 HR", "60 MINS"; null if not written.
+- type: SC for SQ/subcutaneous; IVB for IV bolus; PUMP only for a 5-fluorouracil infusion-pump order; otherwise IV.
+- The same drug twice (for example 5FU bolus and pump) means two entries.
+- Never guess: anything uncertain goes into unclear (use "id" for an unclear drug name).`;
+let P={fl:new Set()},rows=[];
+const OPT='<option value="">— اختر الدواء —</option>'+D.map(d=>`<option value="${d.id}">${d.name} (${d.conc})</option>`).join("");
+const norm=s=>(s||"").toLowerCase().replace(/[^a-z0-9]/g,"");
+function match(name,type){const n=norm(name);if(!n)return null;
+ if(/fluorouracil|flurouracil|5fu/.test(n))return D.find(x=>x.id==32);
+ if(/leucovorin|folinate|folinic/.test(n))return D.find(x=>x.id==19);
+ const c=D.filter(x=>{const m=norm(x.name);return m.includes(n)||n.includes(m)});
+ if(new Set(c.map(x=>x.conc)).size<=1)return c[0]||null;
+ const k=c.filter(x=>SCRE.test(x.name)===(type==="SC"));
+ return k.length&&new Set(k.map(x=>x.conc)).size===1?k[0]:null}
+function nd(s){s=(s||"").trim();const l=s.toLowerCase();if(!l||l==="none")return"";if(/d5w|dextrose|glucose/.test(l))return"DEXTROSE 5%";if(/^ns$|saline|sodium|0\.9/.test(l))return"SODIUM CHLORIDE 0.9%";return s.toUpperCase()}
+function lname(d){if(d.id==32)return"FLUOROURACIL";if(d.id==47)return"RITUXIMAB SC";return d.name.toUpperCase().replace(" INJECTION","").replace(" HCL","")}
+function calc(r){const d=D.find(x=>x.id==r.id),dose=parseFloat(r.dose);if(!d||!(dose>0))return{ok:false,d};
+ const vol=dose/d.conc,n=d.name.toLowerCase();let ft=r.type==="PUMP"?230:n.includes("bevacizumab")?100:n.includes("cetuximab")?500:null,dil,total;
+ if(ft!=null){total=ft;dil=ft-vol}else{dil=parseFloat(r.dml)||0;total=vol+dil}
+ return{ok:true,d,vol,dil,total,ft,bad:dil<-1e-9}}
+function lab(r){const c=calc(r);if(!c.ok||c.bad)return"";const L=[`KFAFH - FOR ${r.type==="SC"?"SUBCUTANEOUS":"INTRAVENOUS"} INFUSION`,`${lname(c.d)} (${c.d.conc} MG/ML)    ${r.dose.trim()} MG`];
+ const dn=nd(r.dil);if(dn&&c.dil>1e-9)L.push(`${dn}    ${R1(c.dil)} ML`);
+ const v=`VOLUME: ${R1(c.total)} ML`;
+ L.push(r.type==="PUMP"?`INFUSED: 46 HRS INFUSION PUMP    ${v}`:r.dur.trim()?`INFUSED OVER: ${r.dur.trim().toUpperCase()}    ${v}`:v);
+ L.push("Prep Date:        BUD:",`Pt. Name: ${P.name.trim().toUpperCase()}`,`MRN: ${P.mrn.trim()}    WARD: ADULT ONCO`,"PREP BY:        CHECKED BY:","caution: CYTOTOXIC");return L.join("\n")}
+function sname(r,c){let b=lname(c.d);if(c.d.id==32)b="5FU"+(r.type==="PUMP"?" pump":r.type==="IVB"?" bolus":"");else b=b.charAt(0)+b.slice(1).toLowerCase();return b.replace(/[\\\/?*\[\]:]/g,"").slice(0,31)}
+function blank(){return{id:null,ai:"",dose:"",type:"IV",dil:"SODIUM CHLORIDE 0.9%",dml:"",dur:"",fl:new Set()}}
+function render(){const tb=$("#tb");tb.innerHTML="";
+ rows.forEach((r,i)=>{const tr=document.createElement("tr");tr.dataset.i=i;
+ tr.innerHTML=`<td class="c">${i+1}</td><td><select data-k="id">${OPT}</select><div class="note"></div></td><td><input data-k="dose" inputmode="decimal" dir="ltr"></td><td><select data-k="type">${TYPES.map(t=>`<option>${t}</option>`).join("")}</select></td><td><input data-k="dil" list="dl" dir="ltr"></td><td><input data-k="dml" inputmode="decimal" dir="ltr"></td><td><input data-k="dur" dir="ltr"></td><td class="c k"></td><td class="c v"></td><td class="c t"></td><td><button data-x="1" aria-label="حذف">✕</button></td>`;
+ tr.querySelectorAll("[data-k]").forEach(e=>{const k=e.dataset.k;e.value=r[k]??"";if(r.fl.has(k))e.classList.add("warn")});
+ tb.append(tr)});refresh()}
+function refresh(){const pr=[];
+ $("#pn").classList.toggle("warn",P.fl.has("name"));$("#pm").classList.toggle("warn",P.fl.has("mrn"));
+ if(!P.name?.trim())pr.push("اسم المريض ناقص");if(!P.mrn?.trim())pr.push("الرقم الطبي ناقص");if(!rows.length)pr.push("لا توجد أدوية");
+ let pv="";
+ document.querySelectorAll("#tb tr").forEach(tr=>{const r=rows[tr.dataset.i],c=calc(r),i=+tr.dataset.i+1,dm=tr.querySelector('[data-k="dml"]');
+ tr.querySelector(".k").textContent=c.d?c.d.conc:"—";tr.querySelector(".v").textContent=c.ok?R1(c.vol)+" ML":"—";tr.querySelector(".t").textContent=c.ok&&!c.bad?R1(c.total)+" ML":"—";
+ dm.readOnly=!!(c.ok&&c.ft!=null);if(dm.readOnly)dm.value=c.bad?"":R1(c.dil);
+ tr.querySelector(".note").textContent=!c.d&&r.ai?`قرأت: ${r.ai} — اختر النسخة الصحيحة`:"";
+ if(!c.d)pr.push(`دواء ${i}: اختر الدواء من الجدول`);else if(!c.ok)pr.push(`دواء ${i}: الجرعة ناقصة`);else if(c.bad)pr.push(`دواء ${i}: حجم الدواء أكبر من الحجم الكلي الثابت`);
+ const t=lab(r);if(t)pv+=`<pre>${t.replace(/&/g,"&amp;").replace(/</g,"&lt;")}</pre>`});
+ $("#pvs").innerHTML=pv;$("#pr").innerHTML=pr.map(x=>`<li>${x}</li>`).join("");
+ $("#gen").disabled=pr.length>0||!$("#cf").checked}
+$("#tb").addEventListener("input",e=>{const tr=e.target.closest("tr"),k=e.target.dataset.k;if(!tr||!k)return;const r=rows[tr.dataset.i];
+ r[k]=k==="id"?(e.target.value?+e.target.value:null):e.target.value;r.fl.delete(k);e.target.classList.remove("warn");refresh()});
+$("#tb").addEventListener("click",e=>{const b=e.target.closest("[data-x]");if(!b)return;rows.splice(+b.closest("tr").dataset.i,1);render()});
+$("#pn").oninput=e=>{P.name=e.target.value;P.fl.delete("name");refresh()};$("#pm").oninput=e=>{P.mrn=e.target.value.replace(/\D/g,"");e.target.value=P.mrn;P.fl.delete("mrn");refresh()};
+$("#cf").onchange=refresh;$("#add").onclick=()=>{rows.push(blank());render()};
+$("#rst").onclick=()=>{P={fl:new Set(),name:"",mrn:""};rows=[];$("#pn").value=$("#pm").value="";$("#pv").style.display="none";$("#st").textContent="";$("#gs").textContent="";$("#cf").checked=false;render()};
+const dl=document.createElement("datalist");dl.id="dl";dl.innerHTML='<option value="SODIUM CHLORIDE 0.9%"><option value="DEXTROSE 5%">';document.body.append(dl);
+function setSt(t,e){const s=$("#st");s.textContent=t;s.className=e?"err":""}
+function shrink(f){return new Promise((ok,no)=>{const u=URL.createObjectURL(f),im=new Image();im.onload=()=>{const s=Math.min(1,1800/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*s);c.height=Math.round(im.height*s);c.getContext("2d").drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);c.toBlob(b=>b?ok(b):no(new Error("img")),"image/jpeg",.88)};im.onerror=()=>no(new Error("img"));im.src=u})}
+function apply(o){P={name:(o.patient?.name||"").toUpperCase(),mrn:String(o.patient?.mrn||"").replace(/\D/g,""),fl:new Set(o.unclear_patient||[])};
+ if(!P.name)P.fl.add("name");if(!P.mrn)P.fl.add("mrn");$("#pn").value=P.name;$("#pm").value=P.mrn;
+ rows=(o.drugs||[]).map(d=>{const type=TYPES.includes(d.type)?d.type:"IV",m=match(d.name,type),r=blank();
+  Object.assign(r,{id:m?m.id:null,ai:d.name||"",dose:String(d.dose??"").replace(/[^\d.]/g,""),type,dil:nd(d.diluent),dml:d.diluent_ml==null?"":String(d.diluent_ml).replace(/[^\d.]/g,""),dur:d.duration||"",fl:new Set(d.unclear||[])});
+  if(!m)r.fl.add("id");return r});render()}
+async function ask(key,blob){const b64=await new Promise(r=>{const f=new FileReader();f.onload=()=>r(f.result.split(",")[1]);f.readAsDataURL(blob)});
+ const res=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"content-type":"application/json","x-api-key":key,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},body:JSON.stringify({model:"claude-sonnet-5-5",max_tokens:2500,messages:[{role:"user",content:[{type:"image",source:{type:"base64",media_type:"image/jpeg",data:b64}},{type:"text",text:PROMPT}]}]})});
+ if(res.status===401)throw{code:"auth"};if(res.status===429)throw{code:"rate_limited"};if(!res.ok)throw{code:"http"};
+ const j=await res.json(),t=j.content.map(x=>x.text||"").join(""),m=t.match(/\{[\s\S]*\}/);return JSON.parse(m[0])}
+const gk=()=>{try{return localStorage.getItem("ak")}catch(e){return null}};
+async function readImg(f){if(!f)return;$("#pv").src=URL.createObjectURL(f);$("#pv").style.display="block";setSt("جاري قراءة الروشتة…");
+ try{const key=gk();if(!key)throw{code:"na"};const b=await shrink(f);const o=await ask(key,b);apply(o);
+  setSt("تمت القراءة. الخانات المظللة بالأصفر غير واضحة، راجعها وعدّلها.")}
+ catch(e){setSt(e.code==="na"?"أضف مفتاح API من الإعدادات للقراءة التلقائية، أو أدخل البيانات يدويًا.":e.code==="auth"?"مفتاح API غير صحيح.":e.code==="rate_limited"?"المحاولات كثيرة، انتظر قليلًا وجرّب مرة أخرى.":"تعذّرت قراءة الصورة. جرّب صورة أوضح أو أدخل البيانات يدويًا.",1);if(!rows.length){rows=[blank()];render()}}}
+$("#cam").onchange=e=>{readImg(e.target.files[0]);e.target.value=""};$("#fil").onchange=e=>{readImg(e.target.files[0]);e.target.value=""};
+$("#gen").onclick=async()=>{const g=$("#gs");g.className="";g.textContent="";
+ try{const wb=new ExcelJS.Workbook(),used=new Set();
+  rows.forEach(r=>{const c=calc(r);let n=sname(r,c),k=n,j=2;while(used.has(k.toLowerCase()))k=n.slice(0,28)+" "+j++;used.add(k.toLowerCase());
+   const ws=wb.addWorksheet(k,{pageSetup:{orientation:"portrait",paperSize:257,margins:{left:.2,right:.4,top:0,bottom:0,header:.3,footer:.3}}});
+   ws.getColumn(1).width=44.43;ws.getRow(1).height=142.5;const a=ws.getCell("A1");a.value=lab(r);a.font={name:"Calibri",size:11};a.alignment={wrapText:true,vertical:"top"}});
+  const buf=await wb.xlsx.writeBuffer();const u=URL.createObjectURL(new Blob([buf],{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"})),a=document.createElement("a");a.href=u;a.download=P.name.trim().replace(/\s+/g,"_")+"_labels.xlsx";document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000);g.textContent="تم تكوين الملف."}
+ catch(e){if(e&&e.code==="declined")return;g.className="err";g.textContent="تعذّر حفظ الملف. حاول مرة أخرى."}};
+$("#aks").onclick=()=>{try{localStorage.setItem("ak",$("#ak").value.trim());setSt("تم حفظ المفتاح على هذا الجهاز.")}catch(e){setSt("تعذّر حفظ المفتاح.",1)}};
+$("#akd").onclick=()=>{try{localStorage.removeItem("ak")}catch(e){}$("#ak").value="";setSt("تم حذف المفتاح.")};
+$("#ak").value=gk()||"";
+P={name:"",mrn:"",fl:new Set()};rows=[blank()];render();
+</script></body></html>
