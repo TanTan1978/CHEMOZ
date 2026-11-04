@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KFAFH - نظام ليبلات أدوية الكيماوي</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; color: #333; }
+        .container { max-width: 800px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+        h1 { color: #005f73; text-align: center; margin-bottom: 25px; }
+        .upload-section { border: 2px dashed #0a9396; padding: 30px; text-align: center; border-radius: 8px; background: #f8f9fa; cursor: pointer; transition: 0.3s; }
+        .upload-section:hover { background: #e9ecef; }
+        input[type="file"] { display: none; }
+        .btn { background-color: #0a9396; color: white; border: none; padding: 12px 25px; font-size: 16px; border-radius: 6px; cursor: pointer; margin-top: 15px; transition: 0.3s; }
+        .btn:hover { background-color: #005f73; }
+        .results-section { margin-top: 30px; display: none; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: right; }
+        th { background-color: #e0fbfc; color: #005f73; }
+    </style>
+    <!-- مكتبة لإنشاء ملفات إكسل مباشرة من المتصفح -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>مستشفى الملك فهد للقوات المسلحة (KFAFH)</h1>
+        <p style="text-align: center; color: #666;">نظام استخراج وتجهيز ليبلات العلاج الكيماوي</p>
+        
+        <div class="upload-section" onclick="document.getElementById('prescriptionFile').click()">
+            <p>📷 اضغط هنا لالتقاط صورة الروشتة بالكاميرا أو اختيار ملف من الهاتف</p>
+            <input type="file" id="prescriptionFile" accept="image/*" onchange="handleImageUpload(event)">
+        </div>
+
+        <div class="results-section" id="resultsSection">
+            <h3>البيانات المستخرجة والحسابات:</h3>
+            <div id="extractedDataDisplay"></div>
+            <button class="btn" onclick="exportToExcel()">تصدير إلى ملف إكسل 📊</button>
+        </div>
+    </div>
+
+    <script>
+        let currentData = null;
+
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // محاكاة قراءة الروشتة واستخراج البيانات (يمكن ربطها بـ OCR API مستقبلاً)
+            // بناءً على قواعدك الصارمة: الحسابات برمجياً فقط دون تعديل الجرعة المكتوبة
+            currentData = {
+                patientName: "EID NJR ALOUTAIBI",
+                mrn: "2034306304",
+                drugName: "GEMCITABINE (40 MG/ML)",
+                dose: 1000,
+                diluent: "SODIUM CHLORIDE 0.9%",
+                diluentVol: 100,
+                infusionRate: "45 MINS"
+            };
+
+            // الحسابات البرمجية
+            let drugVol = currentData.dose / 40; // التركيز 40 mg/mL
+            let totalVol = drugopVol = drugVol + currentData.diluentVol;
+            currentData.drugVol = drugVol;
+            currentData.totalVol = totalVol;
+
+            let html = `
+                <table>
+                    <tr><th>البيان</th><th>القيمة</th></tr>
+                    <tr><td>اسم المريض</td><td>${currentData.patientName}</td></tr>
+                    <tr><td>الـ MRN</td><td>${currentData.mrn}</td></tr>
+                    <tr><td>اسم الدواء والجرعة</td><td>${currentData.drugName} - ${currentData.dose} MG</td></tr>
+                    <tr><td>حجم الدواء</td><td>${drugVol} ML</td></tr>
+                    <tr><td>الـ Diluent وحجمه</td><td>${currentData.diluent} - ${currentData.diluentVol} ML</td></tr>
+                    <tr><td>الحجم الكلي</td><td>${totalVol} ML</td></tr>
+                    <tr><td>مدة التسريب</td><td>${currentData.infusionRate}</td></tr>
+                </table>
+            `;
+
+            document.getElementById('extractedDataDisplay').innerHTML = html;
+            document.getElementById('resultsSection').style.display = 'block';
+        }
+
+        function exportToExcel() {
+            if (!currentData) return;
+
+            let labelText = `KFAFH - FOR INTRAVENOUS INFUSION\n` +
+                            `${currentData.drugName}    ${currentData.dose} MG\n` +
+                            `${currentData.diluent}    ${currentData.diluentVol} ML\n` +
+                            `INFUSED OVER: ${currentData.infusionRate}    VOLUME: ${currentData.totalVol} ML\n` +
+                            `Prep Date:        BUD:\n` +
+                            `Pt. Name: ${currentData.patientName}\n` +
+                            `MRN: ${currentData.mrn}    WARD: ADULT ONCO\n` +
+                            `PREP BY:        CHECKED BY:\n` +
+                            `caution: CYTOTOXIC`;
+
+            let wb = XLSX.utils.book_new();
+            let ws = XLSX.utils.aoa_to_sheet([[labelText]]);
+
+            // تنسيق الخلية A1 لتعمل كليبل مطابق تماماً للمواصفات
+            ws['A1'].s = {
+                font: { name: "Calibri", sz: 11 },
+                alignment: { wrapText: true, vertical: "top", horizontal: "left" }
+            };
+
+            // ضبط عرض العمود وارتفاع السطر
+            ws['!cols'] = [{ wch: 47 }];
+            ws['!rows'] = [{ hpt: 140 }];
+
+            XLSX.utils.book_append_sheet(wb, ws, "Gemcitabine Label");
+            XLSX.writeFile(wb, `${currentData.patientName}_Label.xlsx`);
+        }
+    </script>
+</body>
+</html>
